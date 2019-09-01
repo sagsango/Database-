@@ -1,0 +1,223 @@
+CREATING TABLE:
+
+
+
+create table cust(Cust_id Varchar2(3),Lname Varchar2(15),Fname Varchar2(15),Area Varchar2(2),Phone_no number(8));
+
+create table movie(Mv_no number(2),Title Varchar2(25),Type Varchar2(10),Star Varchar2(25),Price number(8,2));
+
+create table invoice(Inv_no Varchar2(3),Mv_no Number(2),Cust_id Varchar2(3),Issue_date date,Return_date date);
+
+insert into cust(Cust_id,Lname,Fname,Area,Phone_no) values ('001','Sah','Bishal','WB',22316285);
+
+insert into cust(Cust_id,Lname,Fname,Area,Phone_no) values ('002','Ummineni','Srikar','HY',22316286);
+
+insert into cust(Cust_id,Lname,Fname,Area,Phone_no) values ('003','Reddy','Harshita','HY',22316287);
+
+insert into cust(Cust_id,Lname,Fname,Area,Phone_no) values ('004','Yongden','Shirling','WB',22316288);
+
+insert into cust(Cust_id,Lname,Fname,Area,Phone_no) values ('005','Chandani','Rishabh','UP',22316289);
+
+insert into cust(Cust_id,Lname,Fname,Area,Phone_no) values ('006','Singh','Ankit Kumar','JH',22316290);
+
+insert into cust(Cust_id,Lname,Fname,Area,Phone_no) values ('007','Singh','Sagar','UP',5108177);
+
+insert into cust(Cust_id,Lname,Fname,Area,Phone_no) values ('008','Gupta','Suryansh','UP',5108151);
+
+insert into cust(Cust_id,Lname,Fname,Area,Phone_no) values ('013','','Diksha','DE',5108152);
+
+insert into cust(Cust_id,Lname,Fname,Area,Phone_no) values ('009','Chatterjee','Shounak','WB',5108122);
+
+insert into cust(Cust_id,Lname,Fname,Area,Phone_no) values ('010','Singh','Sagar','UP',5108133);
+
+insert into cust(Cust_id,Lname,Fname,Area,Phone_no) values ('011','Acharya','Anwesa','AS',5108155);
+
+insert into cust(Cust_id,Lname,Fname,Area,Phone_no) values ('012','Singh','Gurkeerat','AM',5108178);
+
+
+insert into movie(Mv_no,Title,Type,Star,Price) values ('01','Shawshank Redemption','Drama','Morgan Freeman',158456.12);
+
+insert into movie(Mv_no,Title,Type,Star,Price) values ('02','Interstellar','Fiction','Christopher Nolan',256789.12);
+
+insert into movie(Mv_no,Title,Type,Star,Price) values ('03','Inception','Fiction','Christopher Nolan',345678.84);
+
+insert into movie(Mv_no,Title,Type,Star,Price) values ('04','Oblivion','Thriller','Tom Cruise',254697.28);
+
+insert into movie(Mv_no,Title,Type,Star,Price) values ('05','Inferno','Mystery','Robert Langdon',168945.73);
+
+insert into movie(Mv_no,Title,Type,Star,Price) values ('06','Hera Pheri','Comedy','Paresh Rawal',11111.53);
+
+insert into movie(Mv_no,Title,Type,Star,Price) values ('07','Mission Impossible','Action','Tom Cruise',587145);
+
+insert into movie(Mv_no,Title,Type,Star,Price) values ('08','URI:The Surgical Strike','Action','Vicky Kaushal',142879.25);
+
+
+
+insert into invoice(Inv_no,Mv_no,Cust_id,Issue_date,Return_date) values ('001','01','006','25-JUL-19','25-SEP-19');
+
+insert into invoice(Inv_no,Mv_no,Cust_id,Issue_date,Return_date) values ('002','08','006','13-JUN-19','13-AUG-19');
+
+insert into invoice(Inv_no,Mv_no,Cust_id,Issue_date,Return_date) values ('003','01','001','07-JUL-19','08-OCT-19');
+
+insert into invoice(Inv_no,Mv_no,Cust_id,Issue_date,Return_date) values ('004','02','001','02-JUN-19','03-NOV-19');
+
+insert into invoice(Inv_no,Mv_no,Cust_id,Issue_date,Return_date) values ('005','01','002','08-JUN-19','11-OCT-19');
+
+insert into invoice(Inv_no,Mv_no,Cust_id,Issue_date,Return_date) values ('006','02','002','14-MAY-19','18-AUG-19');
+
+insert into invoice(Inv_no,Mv_no,Cust_id,Issue_date,Return_date) values ('007','03','003','19-MAY-19','21-OCT-19');
+
+insert into invoice(Inv_no,Mv_no,Cust_id,Issue_date,Return_date) values ('008','04','004','18-MAY-19','20-JUL-19');
+
+insert into invoice(Inv_no,Mv_no,Cust_id,Issue_date,Return_date) values ('009','05','005','17-MAR-19','18-APR-19');
+
+insert into invoice(Inv_no,Mv_no,Cust_id,Issue_date,Return_date) values ('010','06','006','08-MAR-19','08-AUG-19');
+
+insert into invoice(Inv_no,Mv_no,Cust_id,Issue_date,Return_date) values ('011','07','006','19-MAR-19','20-MAY-19');
+
+insert into invoice(Inv_no,Mv_no,Cust_id,Issue_date,Return_date) values ('012','03','010','20-APR-19','20-MAY-19');
+
+update invoice set Issue_date = '21-SEP-18' where Inv_no = '001';
+
+update MOVIE set price = 170 where TITLE = 'Inception';
+
+update MOVIE set price = 150 where TITLE = 'Shawshank Redemption';
+
+update MOVIE set price = 120 where TITLE = 'Hera Pheri';
+
+update MOVIE set price = 135 where TITLE = 'URI:The Surgical Strike';
+
+update MOVIE set price = 160 where TITLE = 'Mission Impossible';
+
+update MOVIE set price = 145 where TITLE = 'Inferno';
+
+update MOVIE set price = 180 where TITLE = 'Interstellar';
+
+update MOVIE set price = 175 where TITLE = 'Oblivion';
+
+update cust set fname = 'Serena',lname = 'Williams',area='DA',cust_id='010' where Phone_no = 5108122;
+
+update cust set cust_id= '011' where fname='Johnson';
+
+update cust set cust_id= '012' where fname='Anwesa';
+
+update cust set cust_id= '013' where fname='Gurkeerat';
+
+update cust set phone_no=NULL where fname ='Johnson';
+
+update cust set phone_no=NULL where fname ='Will';
+
+update cust set cust_id= '014' where fname ='Diksha';
+
+
+
+QUERIES:
+
+1) select Lname,Fname from cust;
+
+2) select Type from movie;
+
+3) select * from cust where Phone_no > 5550000;
+
+4) select * from movie where Type='Action' or Type='Comedy';
+
+
+5) select * from MOVIE where price > 150 and price < = 200;
+
+6) select fname,lname from cust where fname like '_a%';
+
+7) select lname from cust where lname like 'S%' or lname like 'J%';
+
+8) select * from cust where area like '_A%';
+
+9) select * from cust where area = 'DA' or area = 'MU' or area = 'GH';
+
+10) select mv_no,title,type from movie where star like 'M%';
+
+11) select * from movie where price > 150;
+
+    select price * 15 from movie;
+
+12) select * from movie order by title;
+
+13) select title,type from movie where title!='Horror';
+
+14) select price/(price-100) from movie where title='Mission Impossible';
+
+15) select fname,lname,cust_id,area from cust where phone_no is NULL;
+
+16) select fname,lname from cust where lname is NULL;
+
+17) select * from invoice where issue_date like '___SEP%';
+
+18) select count(*) from cust;
+
+19) select sum(price) from movie;
+
+20) select avg(price) from movie;
+
+21) select max(price) as max_price from movie;
+
+    select min(price) as min_price from movie;
+
+22) select count(*) from movie where price > 150;
+
+23) select ' The invoice no. of Customer Id ' || cust_id || ' is ' || Inv_no || ' and Movie no. is ' || Mv_no from invoice;
+
+    select cust_id || ' has taken ' || Mv_no || ' on ' || Issue_date || ' and will return on ' || return_date from invoice;
+
+24) select type,avg(price) from movie group by type;
+
+25) select type,count(type) from movie group by type;
+
+26) select type,count(type) from movie group by type having type in('Thriller','Comedy');
+
+27) select avg(price) from movie group by price having price > 150;
+
+28) select type,avg(price) from movie group by type,price having type in ('Comedy', 'Thriller') and price >= 150;
+
+29) select invoice.mv_no,cust.fname,cust.lname from invoice inner join cust on invoice.cust_id = cust.cust_id where cust.fname = 'Bishal';
+
+30) select cust.fname,cust.lname,invoice.mv_no from invoice left join cust on invoice.cust_id = cust.cust_id;
+
+31) select movie.title,invoice.cust_id,invoice.mv_no from invoice left join movie on invoice.mv_no = movie.mv_no; 
+
+32) Select movie.title, movie.type from cust,movie where cust.fname='Bishal';
+
+33) Select cust.lname,cust.fname from cust,movie where movie.type='Drama';
+
+34) Select 'The movie taken by '|| cust.fname || ' ' || cust.lname || ' is ' || movie.title || '.' FROM cust,movie,invoice where movie.Mv_no >=3 and cust.Cust_id=invoice.Cust_id and movie.Mv_no = invoice.Mv_no;
+
+35) Select lname, fname from cust where Cust_id = (Select Cust_id from invoice where Mv_no=08);
+
+36) Select lname, fname, area from cust where Cust_id = (Select Cust_id from invoice where Inv_no='008');
+
+37) select Title from movie where Mv_no in (select Mv_no from invoice where Cust_id in (select Cust_id from cust where fname='Ankit' or fname='Rishabh'));
+
+38) select Type,Mv_no from movie where Mv_no in ( select Mv_no from invoice where Cust_id like '001' or Cust_id like '002');
+
+39) select Cust_id from invoice where Mv_no in (select Mv_no from movie where Star like 'Tom Cruise');
+
+40) select fname,lname,Phone_no from cust where Cust_id in(select Cust_id from invoice where Issue_date between '01-Jan-2019' and '30-Jul-2019');
+
+41) select Mv_no,title from movie where Mv_no in( select Mv_no from invoice where Cust_id in(select Cust_id from cust));
+
+42) select Inv_no, Issue_date from invoice;
+
+43) select to_char(Issue_date, 'month') as Issue_Month from invoice;
+
+44) select Inv_no, to_char(Issue_date,'dd-month-yy') as Invoice_Details from invoice;
+
+45) select sysdate+15 as New_Date from dual;
+
+46) select Inv_no, return_date-Issue_date as Days_Elapsed from invoice; 
+
+47) update cust set phone_no = 748214 where fname = 'Anwesa';
+
+48) update invoice set issue_date = to_date('24/07/93', 'dd/mm/yy') where cust_id = '001';
+
+49) delete from invoice where inv_no = '008';
+
+50) delete from invoice where Return_date<'07-Aug-19';
+
+51) update invoice set return_date=to_date('16-08-93','dd-mm-yy') where inv_no='008';
