@@ -201,3 +201,284 @@ where A.id > B.id;
 select * 
 from accounts
 where name='D';
+
+select *
+from accounts
+where name='Walmart'
+union
+select *
+from accounts
+where name='Apple';
+
+select name
+from accounts;
+
+update accounts
+set name='Sagar' 
+where name in ( 'Walmart','Exxon Mobil','Apple','Berkshire Hathaway');
+
+update accounts
+set name='Singh' 
+where name in ( 'General Electric','AmerisourceBergen','Verizon','Chevron');
+
+select name , count(id) as peoplse
+from accounts
+where name in ('Sagar','Singh')
+group by name ;
+
+select name,count(id),max(id),min(id),avg(id)
+from accounts
+where name in ('Sagar','Singh','Max')
+group by name;
+
+select name
+from accounts
+order by name;
+
+update accounts
+set name='Ali'
+where name in ('3M','Abbott Laboratories','AbbVie');
+
+select name,count(id),max(id),min(id),avg(id)
+from accounts
+where name in ('Sagar','Singh','Ali')
+group by name;
+
+select name,count(id) as freq ,max(id)  as max_id,min(id) as min_id,avg(id) as avg_id
+from accounts
+where name in ('Sagar','Singh','Ali')
+group by name
+having count(id) > 3;
+
+select name,count(id) as freq ,max(id)  as max_id,min(id) as min_id,avg(id) as avg_id
+from accounts
+where name in ('Sagar','Singh','Ali')
+group by name
+having count(id) > 3
+order by name;
+
+select name as costumer_name ,count(accounts.id) as freq
+from accounts
+inner join orders on accounts.id=orders.id
+where accounts.id between 1000 and 4000
+group by name
+having count(accounts.id) > 1 
+order by name;
+
+select name
+from accounts
+where exists 
+(
+	select  name
+	 from accounts 
+	 where name='Sagar' and id > 100
+);
+
+
+
+
+select *
+from accounts
+where name='Walmart'
+union
+select *
+from accounts
+where name='Apple';
+
+select name
+from accounts;
+
+update accounts
+set name='Sagar' 
+where name in ( 'Walmart','Exxon Mobil','Apple','Berkshire Hathaway');
+
+update accounts
+set name='Singh' 
+where name in ( 'General Electric','AmerisourceBergen','Verizon','Chevron');
+
+select name , count(id) as peoplse
+from accounts
+where name in ('Sagar','Singh')
+group by name ;
+
+select name,count(id),max(id),min(id),avg(id)
+from accounts
+where name in ('Sagar','Singh','Max')
+group by name;
+
+select name
+from accounts
+order by name;
+
+update accounts
+set name='Ali'
+where name in ('3M','Abbott Laboratories','AbbVie');
+
+select name,count(id),max(id),min(id),avg(id)
+from accounts
+where name in ('Sagar','Singh','Ali')
+group by name;
+
+select name,count(id) as freq ,max(id)  as max_id,min(id) as min_id,avg(id) as avg_id
+from accounts
+where name in ('Sagar','Singh','Ali')
+group by name
+having count(id) > 3;
+
+select name,count(id) as freq ,max(id)  as max_id,min(id) as min_id,avg(id) as avg_id
+from accounts
+where name in ('Sagar','Singh','Ali')
+group by name
+having count(id) > 3
+order by name;
+
+select name as costumer_name ,count(accounts.id) as freq
+from accounts
+inner join orders on accounts.id=orders.id
+where accounts.id between 1000 and 4000
+group by name
+having count(accounts.id) > 1 
+order by name;
+
+select name
+from accounts
+where exists 
+(
+	select  name
+	 from accounts 
+	 where name='Sagar' and id > 100
+);
+
+/***************************************************************
+The ANY and ALL operators are used with a WHERE or HAVING clause.
+
+The ANY operator returns true if any of the subquery values meet 
+the condition.
+
+The ALL operator returns true if all of the subquery values meet the condition.
+******************************************************************/
+
+select name , id 
+from accounts
+where id=
+	any(select id
+     from accounts
+     where name='Sagar'
+     );
+ 
+select name , id 
+from accounts
+where id=
+	any(select id
+     from accounts
+     where name in ('Sagar','Singh','Ali')
+     )
+order by name;
+
+ select name , id 
+from accounts
+where id=
+	any(select id
+     from accounts
+     where id >= 0
+     )
+order by name;
+
+/*
+********************
+** Unable to use  **
+********************
+
+The SQL SELECT INTO Statement
+The SELECT INTO statement copies data from one table into a new table.
+
+SELECT CustomerName, ContactName INTO CustomersBackup2017
+FROM Customers;
+
+SELECT * INTO CustomersBackup2017
+FROM Customers;
+*/
+/* 
+
+**********************
+***     Problem    ***
+**********************
+create table bla(
+  id integer,
+  name char(20),
+  website char(20),
+  lat numeric,
+  long numeric,
+  primary_poc char(30),
+  sales_rep_id int
+  );
+  
+  
+insert * into newtable
+from accounts;
+
+select name,id
+from bla;
+*/
+
+
+
+
+
+/*
+********************
+** Unable to use  **
+********************
+The SQL INSERT INTO SELECT Statement
+The INSERT INTO SELECT statement copies data from one table and inserts it into another table.
+
+INSERT INTO SELECT requires that data types in source and target tables match
+The existing records in the target table are unaffected
+*/
+
+
+
+select * from accounts;
+
+select name ,id,
+case
+   when id > 1191 then 'Greater'
+   when id < 1191 then 'Lesser'
+   else 'Equal'
+end as id_compare_1200
+from accounts
+order by id;
+
+select name , id * sales_rep_id  as product
+from accounts;
+
+
+
+
+/************************
+*****  NULL FUNCTIONS ***
+************************/
+
+
+
+/**********************************************
+*****SQL Stored Procedures for SQL Server******
+CREATE PROCEDURE SelectAllCustomers
+AS
+SELECT * FROM Customers
+GO;
+
+Execute the stored procedure above as follows:
+Example
+
+EXEC SelectAllCustomers;
+*********************************************/
+--This query was giving error
+create PROCEDURE  print_account_table
+as
+select *
+from accounts
+go;
+
+
+
