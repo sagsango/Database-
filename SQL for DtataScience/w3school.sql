@@ -481,4 +481,42 @@ from accounts
 go;
 
 
+/*****************************
+****** Create database  ******
+****** Drop database    ******
+****** Backup database  *****/
+
+create table table_name(
+  var1 int,
+  var2 char,
+  var3 numeric,
+  var4 char(4)
+  );
+  
+  drop table table_name;
+  
+  alter table table_name
+  add new_colum char(50);
+  
+  alter table table_name
+  drop old_colum char(50);
+  
+  alter table table_name
+  modify old_colum char(50);
+  
+/****************************************
+**************  NOT NULL ****************
+By default, a column can hold NULL values.
+The NOT NULL constraint enforces a column to NOT accept NULL values.
+This enforces a field to always contain a value, which means that you 
+cannot insert a new record, or update a record without adding a value to this field
+*************************************************/
+  CREATE TABLE Persons (
+    ID int NOT NULL,
+    LastName char(255) NOT NULL,
+    FirstName char(255) NOT NULL,
+    Age int
+);
+
+
 
