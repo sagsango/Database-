@@ -583,6 +583,9 @@ https://www.w3schools.com/sql/sql_foreignkey.asp
 ************************************************/
 
 
-
+select * 
+from accounts
+order by name
+limit 100;
 
    
