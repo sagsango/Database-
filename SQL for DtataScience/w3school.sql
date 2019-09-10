@@ -631,6 +631,12 @@ join sales_reps on
 accounts.sales_rep_id=sales_reps.id
 limit 10;
 
+
+/********************************************
+*** Forigen key may appear more than once ***
+*** Primary Key will appear only once     ***
+********************************************/
+
 select *
 from accounts as t1
 join sales_reps as t2
@@ -651,6 +657,12 @@ join accounts as t2
 on t1.account_id=t2.id            --join t1 and t2
 limit 10;
 
-
+--Type of nested
+SELECT *
+FROM web_events
+JOIN accounts
+ON web_events.account_id = accounts.id
+JOIN orders
+ON accounts.id = orders.account_id
 
    
