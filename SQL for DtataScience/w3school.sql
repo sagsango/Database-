@@ -665,4 +665,136 @@ ON web_events.account_id = accounts.id
 JOIN orders
 ON accounts.id = orders.account_id
 
+
+SELECT r.name region, s.name rep, a.name account
+FROM sales_reps s
+JOIN region r
+ON s.region_id = r.id
+JOIN accounts a
+ON a.sales_rep_id = s.id
+WHERE r.name = 'Midwest'
+ORDER BY a.name;
+
+SELECT r.name region, s.name rep, a.name account
+FROM sales_reps s
+JOIN region r
+ON s.region_id = r.id
+JOIN accounts a
+ON a.sales_rep_id = s.id
+WHERE r.name = 'Midwest' AND s.name LIKE 'S%'
+ORDER BY a.name;
+
+SELECT r.name region, s.name rep, a.name account
+FROM sales_reps s
+JOIN region r
+ON s.region_id = r.id
+JOIN accounts a
+ON a.sales_rep_id = s.id
+WHERE r.name = 'Midwest' AND s.name LIKE '% K%'
+ORDER BY a.name;
+
+SELECT r.name region, a.name account, o.total_amt_usd/(o.total + 0.01) unit_price
+FROM region r
+JOIN sales_reps s
+ON s.region_id = r.id
+JOIN accounts a
+ON a.sales_rep_id = s.id
+JOIN orders o
+ON o.account_id = a.id
+WHERE o.standard_qty > 100;
+
+
+SELECT r.name region, a.name account, o.total_amt_usd/(o.total + 0.01) unit_price
+FROM region r
+JOIN sales_reps s
+ON s.region_id = r.id
+JOIN accounts a
+ON a.sales_rep_id = s.id
+JOIN orders o
+ON o.account_id = a.id
+WHERE o.standard_qty > 100 AND o.poster_qty > 50
+ORDER BY unit_price;
+
+
+SELECT r.name region, a.name account, o.total_amt_usd/(o.total + 0.01) unit_price
+FROM region r
+JOIN sales_reps s
+ON s.region_id = r.id
+JOIN accounts a
+ON a.sales_rep_id = s.id
+JOIN orders o
+ON o.account_id = a.id
+WHERE o.standard_qty > 100 AND o.poster_qty > 50
+ORDER BY unit_price DESC;
+
+
+SELECT DISTINCT a.name, w.channel
+FROM accounts a
+JOIN web_events w
+ON a.id = w.account_id
+WHERE a.id = '1001';
+
+SELECT o.occurred_at, a.name, o.total, o.total_amt_usd
+FROM accounts a
+JOIN orders o
+ON o.account_id = a.id
+WHERE o.occurred_at BETWEEN '01-01-2015' AND '01-01-2016'
+ORDER BY o.occurred_at DESC;
+
+update accounts
+set primary_poc = NULL
+where name='Walmart';
+
+select *
+from accounts
+where primary_poc is not  NULL;
+
+select count(id) as NULL_primary_poc
+from accounts
+where primary_poc is NULL;
+
+select count(id) as id_count , sum(id) as id_sum, avg(id) as id_avg,max(id) as id_max,min(id) as id_min
+from accounts;
+
+
+--purchases grouped by costumers 
+select t2.id as account_id,t2.name as account_name,t2.website as account_web, count ( t1.occurred_at) as no_of_purchase
+from orders as t1
+join accounts as t2 
+on t1.account_id=t2.id
+group by t2.id , t2.name ,t2.website
+order by  t2.id;
+
+--purchases grouped by region id and name
+select t1.id as region_id,t1.name as region_name,count(t1.id) as total_number_of_purchases
+from region as t1
+join sales_reps as t2
+on t1.id=t2.region_id
+join accounts as t3
+on t2.id=t3.sales_rep_id
+join orders as t4
+on t3.id=t4.account_id
+group by t1.id,t1.name;
+
+--no of costumers grouped by region
+select t1.id as region_id,t1.name as region_name,count(t1.id) as no_of_costumers
+from region as t1
+join sales_reps as t2
+on t1.id=t2.region_id
+join accounts as t3
+on t2.id=t3.sales_rep_id
+group by t1.id,t1.name
+order by t1.id,t1.name;
+
+--no of web_events grouped by costumers
+select t1.id as costumer_id,t1.name as costumer_name,count(t1.id) as no_of_web_events
+from accounts as t1
+join web_events as t2
+on t1.id=t2.account_id
+group by t1.id,t1.name
+order by t1.id,t1.name;
+
+--no of orders and no of web_events grouped by account id and account name ??
+
+
    
