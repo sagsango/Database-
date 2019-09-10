@@ -797,4 +797,49 @@ order by t1.id,t1.name;
 --no of orders and no of web_events grouped by account id and account name ??
 
 
-   
+select sum(poster_qty) as poster_qty_sum
+from orders;
+
+select sum(total_amt_usd) as total_amt_usd_sum
+from orders;
+
+select sum(standard_amt_usd) as standard_amt_usd_sum ,
+       sum(gloss_amt_usd) as gloss_amt_sum
+       from orders;
+
+ select sum(standard_amt_usd)/sum(standard_qty) as amt_per_qty
+ from orders;
+
+
+/**********************
+*****    MIDIAN  ******
+**********************/
+SELECT *
+FROM (SELECT total_amt_usd
+      FROM orders
+      ORDER BY total_amt_usd
+      LIMIT 3457) AS Table1
+ORDER BY total_amt_usd DESC
+LIMIT 2;
+
+
+/*************************************************************
+****              POWERFUL GROUP BY                       ****
+**** The GROUP BY always goes between WHERE and ORDER BY. ****
+*************************************************************/
+select account_id,
+ 		sum(standard_qty) as standard_qty_sum,
+        sum(gloss_qty) as gloss_qty_sum,
+        sum(poster_qty) as poster_qty_sum,
+        sum(total_amt_usd) as total_amt_usd_sum
+from orders
+group by account_id;
+
+select account_id,
+ 		sum(standard_qty) as standard_qty_sum,
+        sum(gloss_qty) as gloss_qty_sum,
+        sum(poster_qty) as poster_qty_sum,
+        sum(total_amt_usd) as total_amt_usd_sum
+from orders
+group by account_id
+order by account_id;
