@@ -596,4 +596,61 @@ select *
 from accounts
 order by id , name ,website desc;
 
+select * 
+from web_events
+join accounts on web_events.account_id=accounts.id;
+
+select * 
+from accounts
+join web_events on 
+accounts.id=web_events.account_id;
+
+select *
+from accounts
+join orders on accounts.id=orders.account_id
+limit 10;
+
+select * 
+from sales_reps
+join accounts on sales_reps.id=accounts.sales_rep_id
+limit 10;
+
+select *
+from region
+join sales_reps on
+region.id=sales_reps.region_id
+limit 08;
+
+select *
+from accounts
+join web_events on
+accounts.id=web_events.account_id
+join orders on
+accounts.id=orders.account_id
+join sales_reps on
+accounts.sales_rep_id=sales_reps.id
+limit 10;
+
+select *
+from accounts as t1
+join sales_reps as t2
+	join region as t3
+    on t2.region_id=t3.id --join t2 and t3
+on t1.sales_rep_id=t2.id  --join t1 and t2
+limit 10;
+
+select * 
+from web_events as t1
+join accounts as t2
+     join orders as t3
+     on t2.id=t3.account_id       --join t2 and t3
+     join sales_reps as t4
+          join region as t5       
+          on t4.region_id=t5.id   --join t4 and t5
+     on t2.sales_rep_id=t4.id     --join t2 and t4
+on t1.account_id=t2.id            --join t1 and t2
+limit 10;
+
+
+
    
