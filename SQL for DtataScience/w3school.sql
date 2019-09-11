@@ -812,7 +812,7 @@ select sum(standard_amt_usd) as standard_amt_usd_sum ,
 
 
 /**********************
-*****    MIDIAN  ******
+*****    MEDIAN  ******
 **********************/
 SELECT *
 FROM (SELECT total_amt_usd
@@ -843,3 +843,673 @@ select account_id,
 from orders
 group by account_id
 order by account_id;
+
+select a.name as account_name,
+       o.occurred_at as first_purchase
+from orders as o
+join accounts as a
+on a.id=o.account_id
+order by o.occurred_at
+limit 1;
+
+select a.name as company_name,
+ 		sum(o.total_amt_usd) as total_sales
+ from accounts as a
+ join orders as o
+ on a.id=o.account_id
+ group by a.name;
+
+select w.occurred_at as latest_web_event_date,
+	w.channel as channel_used,
+	a.name as assosiated_account
+from web_events as w
+join accounts as a
+on w.account_id=a.id
+order by w.occurred_at desc
+limit 1;
+
+select w.channel as channel_name,
+	count(w.id) as no_of_times_used
+from web_events as w
+group by w.channel;
+
+select w.channel as channel_name,
+	count(*) as no_of_times_used
+from web_events as w
+group by w.channel;
+
+select a.primary_poc as primary_contact_of_earlist_event
+from web_events as w
+join accounts as a
+on w.account_id=a.id
+order by w.occurred_at
+limit 1;
+
+--After modification/constr of the table use new/own names
+select a.name as account_name,
+	min(o.total_amt_usd) as min_total_usd
+from accounts as a
+join orders as o
+on a.id=o.account_id
+group by a.name
+order by min_total_usd;
+
+--After modification/constr of the table use new/own names
+select r.name as region_name,
+	count(*) as no_of_sales_reps
+ from region as r
+ join sales_reps as s
+ on r.id=s.region_id
+ group by region_name
+ order by no_of_sales_reps;
+ 
+ select a.name as account_name,
+	avg(o.standard_qty) as avg_satndard_qty,
+    avg(o.poster_qty) as poster_qty_used,
+    avg(o.gloss_qty) as glossy_qty_used
+from accounts as a
+join orders as o
+on a.id=o.account_id
+group by account_name;
+
+select a.name as account_name,
+	avg(o.standard_amt_usd) as avg_satndard_amt,
+    avg(o.poster_amt_usd) as poster_qty_amt,
+    avg(o.gloss_amt_usd) as glossy_qty_amt
+from accounts as a
+join orders as o
+on a.id=o.account_id
+group by account_name;
+  
+select s.name as sales_reps_name,
+	w.channel as channel_name,
+    count(*) as no_of_occourance
+from sales_reps as s
+join accounts as a
+on s.id=a.sales_rep_id
+join web_events as w
+on w.account_id=a.id
+group by sales_reps_name,channel_name
+order by no_of_occourance desc;
+
+--final joined table independent of the order of table join operations
+ select r.name as region_name,
+ 	w.channel as channel_name,
+    count(*) as no_of_times_channel_used
+ from region as r
+ join sales_reps as s
+ on r.id=s.region_id
+ join accounts as a
+ on a.sales_rep_id=s.id
+ join web_events as w
+ on w.account_id=a.id
+ group by region_name,channel_name
+ order by no_of_times_channel_used desc;
+ 
+ select a.id as account_id,
+	a.name as account_name,
+    r.id as region_id,
+    r.name as region_name
+from accounts as a
+join sales_reps as s
+on a.sales_rep_id=s.id
+join region as r
+on r.id=s.region_id;
+
+select distinct a.id as account_id,
+	a.name as account_name,
+    r.id as region_id,
+    r.name as region_name
+from accounts as a
+join sales_reps as s
+on a.sales_rep_id=s.id
+join region as r
+on r.id=s.region_id;
+
+select s.id as sales_rep_id,
+	s.name as sales_rep_id,
+    a.id as worked_on_account_id,
+	a.name as worked_on_account_name
+from accounts as a
+join sales_reps as s
+on a.sales_rep_id=s.id;
+
+select distinct s.id as sales_rep_id,
+	s.name as sales_rep_name,
+    a.id as worked_on_account_id,
+	a.name as worked_on_account_name
+from accounts as a
+join sales_reps as s
+on a.sales_rep_id=s.id;
+    
+select o.account_id as account_id,
+	sum(o.total_amt_usd) as total_amt
+from orders as o
+group by account_id;
+
+
+select o.account_id as account_id,
+	sum(o.total_amt_usd) as total_amt
+from orders as o 
+--where sum(o.total_amt_usd) > 2000 
+--ERROR This col yet not created
+--aggregate functions are not allowed in WHERE
+group by account_id
+having sum(o.total_amt_usd) > 2000
+
+/**************************
+*******    Having   *******
+**************************/
+--WHERE subsets the returned data based on a logical condition.
+
+--WHERE appears after the FROM, JOIN, and ON clauses, but before GROUP BY.
+
+--HAVING appears after the GROUP BY clause, but before the ORDER BY clause.
+
+--HAVING is like WHERE, but it works on logical statements involving aggregations.
+
+
+select s.id as sales_reps_id,
+	s.name as sales_reps_name,
+    count(*) as no_of_accounts_manages
+from accounts as a
+join sales_reps as s
+on a.sales_rep_id=s.id
+group by sales_reps_id , sales_reps_name
+-- having no_of_accounts_manages > 5 
+-- no_of_accounts_manages is applicable for whole col[attibute] op
+-- count(*) is for indivisual row [ data ]
+having count(*) > 5
+order by count(*) ;
+
+
+select a.id as account_id,
+	a.name as account_name,
+    count(*) as no_of_orders
+from accounts as a
+join orders as o
+on o.account_id=a.id
+--group by account_id, account_name
+--Does not works [ should be indivisual not whole table]
+group by a.id ,a.name 
+having count(*) > 20
+order by count(*);
+
+select a.id as account_id,
+	a.name as account_name,
+    count(*) as no_of_orders
+from accounts as a
+join orders as o
+on o.account_id=a.id
+--group by account_id, account_name
+--Does not works [ should be indivisual not whole table]
+group by a.id ,a.name 
+--order by no_of_orders
+--works here
+order by count(*) desc
+limit 1;
+
+
+select a.id as account_id,
+	a.name as account_name,
+    sum(o.total_amt_usd) as total_amt_spend
+from accounts as a
+join orders as o
+on o.account_id=a.id
+group by a.id ,a.name
+having sum(o.total_amt_usd) > 30000
+order by total_amt_spend;
+
+
+select a.id as account_id,
+	a.name as account_name,
+    sum(o.total_amt_usd) as total_amt_spend
+from accounts as a
+join orders as o
+on o.account_id=a.id
+group by a.id ,a.name
+having sum(o.total_amt_usd) < 1000
+order by total_amt_spend;
+
+
+select a.id as account_id,
+	a.name as account_name,
+    sum(o.total_amt_usd) as total_amt_spend
+from accounts as a
+join orders as o
+on o.account_id=a.id
+group by a.id ,a.name
+order by total_amt_spend desc
+limit 1;
+
+SELECT a.id, a.name, SUM(o.total_amt_usd) total_spent
+FROM accounts a
+JOIN orders o
+ON a.id = o.account_id
+GROUP BY a.id, a.name
+ORDER BY total_spent 
+LIMIT 1;
+
+
+select a.id as account_id,
+	a.name as account_name,
+    count(*) as no_of_times_used_facebook
+from accounts as a
+join web_events as w
+on w.account_id=a.id
+where w.channel='facebook'
+group by a.id,a.name
+having count(*) > 6 
+order by no_of_times_used_facebook;
+------------ another solution ------------
+select a.id as account_id,
+	a.name as account_name,
+    count(*) as no_of_times_used_facebook
+from accounts as a
+join web_events as w
+on w.account_id=a.id
+--all the col used before aggrigation should appear in group by
+group by a.id,a.name,w.channel
+having count(*) > 6 and w.channel='facebook'
+order by no_of_times_used_facebook;
+
+select w.channel as channel_name,
+	count(*) as no_of_times_used
+from accounts as a
+join web_events as w
+on w.account_id=a.id
+group by w.channel
+order by no_of_times_used desc
+limit 1;
+
+select a.name as account_name,
+	w.channel as channel_name,
+	count(*) as no_of_times_used
+from accounts as a
+join web_events as w
+on w.account_id=a.id
+group by a.name , w.channel
+order by no_of_times_used desc;
+
+/**********************************************
+******************   Date  ********************
+**********************************************/
+select date_part('month',o.occurred_at) as month,
+       count(*) no_of_purchases
+from orders as o
+group by date_part('month',o.occurred_at)
+order by  month;
+
+select date_part('month',o.occurred_at) as month,
+       count(*) no_of_purchases
+from orders as o
+group by date_part('month',o.occurred_at)
+order by  no_of_purchases desc;
+
+
+select date_part('day',o.occurred_at) as day,
+       count(*) no_of_purchases
+from orders as o
+group by date_part('day',o.occurred_at)
+order by  day;
+
+
+select date_part('year',o.occurred_at) as year_no,
+       count(*) no_of_purchases
+from orders as o
+group by date_part('year',o.occurred_at)
+order by  year_no;
+
+select date_part('second',o.occurred_at) as second,
+       count(*) no_of_purchases
+from orders as o
+group by date_part('second',o.occurred_at)
+order by  second;
+
+select date_part('dow',o.occurred_at) as day_of_week,
+       count(*) no_of_purchases
+from orders as o
+group by date_part('dow',o.occurred_at)
+order by  day_of_week;
+
+/****************************
+***        Case           ***
+****************************/
+select date_part('year',o.occurred_at) as year_,
+	sum(o.total_amt_usd) as total_sales,
+    case 
+    	when sum(o.total_amt_usd) > 5752004.94 then 'Greater than 5752004.94'
+        when sum(o.total_amt_usd) < 5752004.94 then 'Lesser than 5752004.94'
+        else 'Equal to 5752004.94'
+     end as amount_status
+from orders as o
+group by date_part('year',o.occurred_at)
+order by total_sales desc;
+
+select date_part('year',o.occurred_at) as year_,
+	sum(o.total_amt_usd) as total_sales,
+    case 
+    	when sum(o.total_amt_usd) > 5752004.94 then 'Greater than 5752004.94'
+        when sum(o.total_amt_usd) < 5752004.94 then 'Lesser than 5752004.94'
+        else 'Equal to 5752004.94'
+     end as amount_status
+from orders as o
+group by date_part('year',o.occurred_at)
+order by total_sales desc;
+
+
+select case 
+    	when o.total_amt_usd > 1000 then 'Greater than 1000'
+        when o.total_amt_usd < 100 then 'Lesser than 1000'
+        else 'Equal to 1000'
+     end as amount_status,
+     count(*) as no_of_orders
+from orders as o
+group by 1;
+
+select case 
+    	when o.total_amt_usd > 1000 then 'Greater than 1000'
+        when o.total_amt_usd < 100 then 'Lesser than 1000'
+        else 'Equal to 1000'
+     end as amount_status,
+     count(*) as no_of_orders
+from orders as o
+group by amount_status;
+
+
+
+
+select date_part('year',o.occurred_at) as year_,
+	sum(o.total_amt_usd) as total_sales,
+    case 
+    	when sum(o.total_amt_usd) > 5752004.94 then 'Greater than 5752004.94'
+        when sum(o.total_amt_usd) < 5752004.94 then 'Lesser than 5752004.94'
+        else 'Equal to 5752004.94'
+     end as amount_status
+from orders as o
+group by date_part('year',o.occurred_at)
+order by total_sales desc;
+
+
+select case 
+    	when o.total_amt_usd > 1000 then 'Greater than 1000'
+        when o.total_amt_usd < 100 then 'Lesser than 1000'
+        else 'Equal to 1000'
+     end as amount_status,
+     count(*) as no_of_orders
+from orders as o
+group by 1;
+
+select case 
+    	when o.total_amt_usd > 1000 then 'Greater than 1000'
+        when o.total_amt_usd < 100 then 'Lesser than 1000'
+        else 'Equal to 1000'
+     end as amount_status,
+     count(*) as no_of_orders
+from orders as o
+group by amount_status;
+
+select account_id as account_id,
+	total_amt_usd as total_amount,
+    case
+    	when total_amt_usd < 3000 then 'Samller than 3000'
+        else 'Greater or Equal to 3000'
+    end as status
+from orders;
+
+
+select case
+		when total >= 2000 then 'At least 2000'
+        when total < 1000 then 'Less than 1000'
+        else 'Between 1000 and 2000'
+       end as status,
+       count(*) no_of_orders
+from orders
+group by status;
+
+select a.id as account_id,
+	a.name as account_name,
+    sum(o.total_amt_usd) as total_sum,
+    case
+    	when sum(o.total_amt_usd) > 200000 then 'Greater than 200000'
+        when sum(o.total_amt_usd) < 100000 then 'Less than 100000'
+        else 'Between 100000 and 200000'
+    end as level
+ from accounts as a
+-- where date_part('year',o.occurred_at) in ('2017','2013')
+-- above not work
+ join orders as o
+ on o.account_id=a.id
+ where date_part('year',o.occurred_at) in ('2017','2016')
+ group by a.id,a.name
+ order by total_sum desc;
+ 
+ --from
+ --join
+ --where
+ --group by
+ --having
+ --ordered by
+ --limit
+ 
+ select s.id as sales_rep_id,
+ 	s.name as sales_rep_name,
+    count(*) as number_of_orders,
+    case 
+    	when count(*) > 200 then 'Top'
+        else 'not'
+    end as top_preformer
+from sales_reps as s
+join accounts as a
+on s.id=a.sales_rep_id
+join orders as o
+on o.account_id=a.id
+group by s.id,s.name
+order by number_of_orders desc;
+
+
+select s.id as sales_rep_id,
+ 	s.name as sales_rep_name,
+    count(*) as number_of_orders,
+    case 
+    	when count(*) > 750000 or count(*) > 200 then 'Top'
+        when count(*) > 500000 or count(*) > 150 then 'Middle'
+        else 'Low'
+    end as top_preformer
+from sales_reps as s
+join accounts as a
+on s.id=a.sales_rep_id
+join orders as o
+on o.account_id=a.id
+group by s.id,s.name
+order by number_of_orders desc,sales_rep_name;
+
+
+
+/***********************
+****    subquery    ****
+***********************/
+--query
+select w.id as channel_id,
+     date_part('day',w.occurred_at) as day,
+     count(*) event_count
+from web_events as w
+group by w.id,date_part('day',w.occurred_at);
+--subquery
+select channel_id as channel_id,
+	sum(event_count) as avg_per_channel
+from
+ 	(
+     select w.id as channel_id,
+       date_trunc('day',w.occurred_at) as day,
+     count(*) event_count
+     from web_events as w
+     group by w.id,date_trunc('day',w.occurred_at)
+     ) sub
+group by channel_id
+order by avg_per_channel desc;
+
+select w.channel as channel_name,
+	date_trunc('day', w.occurred_at) as day,
+    count(*) as freq
+from web_events as w
+group by w.channel,date_trunc('day',w.occurred_at) 
+order by freq desc;
+
+select *
+from (
+select w.channel as channel_name,
+	date_trunc('day', w.occurred_at) as day,
+    count(*) as freq
+from web_events as w
+group by w.channel,date_trunc('day',w.occurred_at) 
+order by freq desc ) sub;
+
+
+select *
+from (
+select w.channel as channel_name,
+	date_trunc('day', w.occurred_at) as day,
+    count(*) as freq
+from web_events as w
+group by w.channel,date_trunc('day',w.occurred_at) 
+order by freq desc ) sub
+where ( day = '01-01-2017' and channel_name = 'direct' )
+	or( day = '12-31-2016' and channel_name = 'facebook' )
+    or( day = '11-03-2016' and channel_name = 'direct' )
+    or( day = '12-21-2016' and channel_name = 'direct' );
+    
+
+select channel_name,
+ 		avg(freq) as avg_avants_per_day
+from (
+select w.channel as channel_name,
+	date_trunc('day', w.occurred_at) as day,
+    count(*) as freq
+from web_events as w
+group by w.channel,date_trunc('day',w.occurred_at) 
+order by freq desc ) sub
+group by channel_name;
+
+--well formed subquery  
+SELECT *
+FROM (SELECT DATE_TRUNC('day',occurred_at) AS day,
+                channel, COUNT(*) as events
+      FROM web_events 
+      GROUP BY 1,2
+      ORDER BY 3 DESC) sub
+GROUP BY day, channel, events
+ORDER BY 2 DESC;
+
+--all orders during first moth of the company
+--first month  as sub
+select min( date_trunc('month',occurred_at) )
+from orders;
+--full query
+select *
+from orders
+where date_trunc('month',occurred_at) =
+	(  
+       select min( date_trunc('month',occurred_at) )
+       from orders
+     );
+     
+--big query
+select avg(standard_qty) as avg_standard_qty,
+	avg(gloss_qty) as avg_gloss_qty,
+	avg(poster_qty) as avg_poster_qty
+from
+	( 
+        select *
+		from orders
+		where date_trunc('month',occurred_at) =
+		(  
+ 		      select min( date_trunc('month',occurred_at) )
+ 		      from orders
+   	    )
+   ) sub;
+ ------- or -------
+SELECT AVG(standard_qty) avg_std, AVG(gloss_qty) avg_gls, AVG(poster_qty) avg_pst
+FROM orders
+WHERE DATE_TRUNC('month', occurred_at) = 
+     (SELECT DATE_TRUNC('month', MIN(occurred_at)) FROM orders);
+
+
+select sum(total_amt_usd) as total_amt_in_first_month
+from orders
+where date_trunc('month',occurred_at)=
+		( select  date_trunc('month',min(occurred_at))
+         from orders);
+ 
+
+
+--most frequest channel used by every company
+--base1
+select a.id as company_id,
+	a.name as campany_name,
+    w.channel as channel_used,
+    count(*) as no_of_times
+from accounts as a
+join web_events as w
+on a.id=w.account_id
+group by a.id,a.name,w.channel
+order by company_id,channel_used;
+--base2
+select t1.company_id as company_id,
+	t1.company_name as company_name,
+    max(t1.no_of_times) as max_freq
+from 
+	(
+ 	            select a.id as company_id,
+ 		      	a.name as company_name,
+   		        w.channel as channel_used,
+  			    count(*) as no_of_times
+				from accounts as a
+				join web_events as w
+				on a.id=w.account_id
+				group by a.id,a.name,w.channel
+				order by company_id,channel_used
+      ) t1
+group by t1.company_id,t1.company_name
+order by company_id;
+--final
+select * 
+from 
+	(
+      		select a.id as company_id,
+			a.name as campany_name,
+  		    w.channel as channel_used,
+   			 count(*) as no_of_times
+			from accounts as a
+			join web_events as w
+			on a.id=w.account_id
+			group by a.id,a.name,w.channel
+			order by company_id,channel_used
+      ) ftab1
+join 
+	(
+	      	select t1.company_id as company_id,
+			t1.company_name as company_name,
+		    max(t1.no_of_times) as max_freq
+			from 
+			(
+ 	            select a.id as company_id,
+ 		      	a.name as company_name,
+   		        w.channel as channel_used,
+  			    count(*) as no_of_times
+				from accounts as a
+				join web_events as w
+				on a.id=w.account_id
+				group by a.id,a.name,w.channel
+				order by company_id,channel_used
+    		  ) t1
+			  group by t1.company_id,t1.company_name
+			  order by company_id
+      ) ftab2
+on ftab1.company_id=ftab2.company_id
+	and ftab1.no_of_times=ftab2.max_freq
+order by ftab1.company_id;
+      
+
+
+
