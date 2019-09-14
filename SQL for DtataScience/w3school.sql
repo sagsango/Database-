@@ -1005,7 +1005,6 @@ select o.account_id as account_id,
 	sum(o.total_amt_usd) as total_amt
 from orders as o 
 --where sum(o.total_amt_usd) > 2000 
---ERROR This col yet not created
 --aggregate functions are not allowed in WHERE
 group by account_id
 having sum(o.total_amt_usd) > 2000
