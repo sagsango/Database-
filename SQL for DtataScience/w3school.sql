@@ -1,3 +1,11 @@
+/******************************
+********* New Keyword *********
+1.abs(x)
+2.round(x,y)
+3.dual ??
+*******************************
+******************************/
+
 select *
 from accounts
 inner join orders on (accounts.id=orders.id) 
