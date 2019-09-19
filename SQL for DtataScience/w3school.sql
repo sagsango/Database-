@@ -1523,5 +1523,413 @@ on ftab1.company_id=ftab2.company_id
 order by ftab1.company_id;
       
 
+--:q1-----------------------------------------
+select r.id as region_id,
+    s.name as sales_rep_name,
+ 	sum(o.total_amt_usd) as total_usd_sum
+from region as r
+join sales_reps as s
+on r.id=s.region_id
+join accounts as a
+on a.sales_rep_id=s.id
+join orders as o
+on o.account_id=a.id
+group by r.id,s.name;
+
+
+select tab1.region_id as region_id,
+    max(tab1.total_usd_sum) as max_total_usd_sum
+from sales_reps as s
+join (
+select r.id as region_id,
+    s.name as sales_rep_name,
+ 	sum(o.total_amt_usd) as total_usd_sum
+from region as r
+join sales_reps as s
+on r.id=s.region_id
+join accounts as a
+on a.sales_rep_id=s.id
+join orders as o
+on o.account_id=a.id
+group by r.id,s.name  ) as tab1
+on tab1.region_id=s.region_id
+group by tab1.region_id;
+
+
+select tf1.region_id as region_id,
+	tf2.sales_rep_name as sales_rep_name,
+    tf1.max_total_usd_sum
+from (
+select tab1.region_id as region_id,
+    max(tab1.total_usd_sum) as max_total_usd_sum
+from sales_reps as s
+join (
+select r.id as region_id,
+    s.name as sales_rep_name,
+ 	sum(o.total_amt_usd) as total_usd_sum
+from region as r
+join sales_reps as s
+on r.id=s.region_id
+join accounts as a
+on a.sales_rep_id=s.id
+join orders as o
+on o.account_id=a.id
+group by r.id,s.name  ) as tab1
+on tab1.region_id=s.region_id
+group by tab1.region_id ) as tf1
+join (
+select r.id as region_id,
+    s.name as sales_rep_name,
+ 	sum(o.total_amt_usd) as total_usd_sum
+from region as r
+join sales_reps as s
+on r.id=s.region_id
+join accounts as a
+on a.sales_rep_id=s.id
+join orders as o
+on o.account_id=a.id
+group by r.id,s.name ) as tf2
+on tf1.region_id=tf2.region_id
+where tf1.max_total_usd_sum = tf2.total_usd_sum
+order by tf1.max_total_usd_sum desc;
+
+--:q2-----------------------------------------
+select r.id as region_id,
+	r.name as region_name,
+    sum(o.total_amt_usd) as sum
+from region as r
+join sales_reps as s
+on s.region_id=r.id
+join accounts as a
+on a.sales_rep_id=s.id
+join orders as o
+on o.account_id=a.id
+group by r.id , r.name 
+order by sum desc;
+
+
+select count(*)
+from (
+select r.id as region_id,
+	r.name as region_name
+from region as r
+join sales_reps as s
+on s.region_id=r.id
+join accounts as a
+on a.sales_rep_id=s.id
+join orders as o
+on o.account_id=a.id ) as t1
+where t1.region_id in (
+  select mid.region_id
+  from (
+  select r.id as region_id,
+	r.name as region_name,
+    sum(o.total_amt_usd) as sum
+from region as r
+join sales_reps as s
+on s.region_id=r.id
+join accounts as a
+on a.sales_rep_id=s.id
+join orders as o
+on o.account_id=a.id
+group by r.id , r.name 
+order by sum desc ) as mid
+  limit 1);
+
+--or
+select r.id as region_id,
+	sum(o.total_amt_usd) as regional_total_usd
+from region as r
+join sales_reps as s
+on s.region_id=r.id
+join accounts as a
+on a.sales_rep_id=s.id
+join orders as o
+on o.account_id=a.id
+group by r.id;
+
+--also workes when multiple regions have max ( total_usd_sum )
+--gives count region wise with total_usd_sum having max ( total_usd_sum )
+select r.id as region_id
+from region as r
+join sales_reps as s
+on s.region_id=r.id
+join accounts as a
+on a.sales_rep_id=s.id
+join orders as o
+on o.account_id=a.id;
+
+select  t1.region_id as region_id,
+		t1.regional_total_usd as regional_total_usd,
+		count(*) as total_sales
+from (
+ 	 --tested : region_id , regional_total_usd
+	select r.id as region_id,
+	sum(o.total_amt_usd) as regional_total_usd
+	from region as r
+	join sales_reps as s
+	on s.region_id=r.id
+  	join accounts as a
+	on a.sales_rep_id=s.id
+	join orders as o
+	on o.account_id=a.id
+	group by r.id 
+) as t1
+join (
+ 	 --tested :region_id
+	select r.id as region_id
+	from region as r
+	join sales_reps as s
+	on s.region_id=r.id
+	join accounts as a
+	on a.sales_rep_id=s.id
+	join orders as o
+	on o.account_id=a.id 
+) as t2
+on t1.region_id=t2.region_id
+where t1.regional_total_usd in
+( 
+     --tested max(innert.regional_total_usd)
+     select max(innertable.regional_total_usd)
+     from (
+           --tested : region_id,regional_total_usd
+           select r.id as region_id,
+	       sum(o.total_amt_usd) as regional_total_usd
+           from region as r
+    		join sales_reps as s
+     		on s.region_id=r.id
+     		join accounts as a
+     		on a.sales_rep_id=s.id
+     		join orders as o
+     		on o.account_id=a.id
+    		group by r.id 
+      ) as innertable      
+) 
+group by  t1.region_id ,
+		t1.regional_total_usd;
+
+
+
+---q3:
+--tested :
+select a.id as account_id,
+	a.name as account_name,
+    sum(o.standard_qty) as total_standard_qty_in_lifetime
+from accounts as a
+join orders as o
+on a.id=o.account_id
+group by a.id,a.name
+order by total_standard_qty_in_lifetime desc;
+
+
+--tested:
+select a.id as account_id,
+	a.name as account_name,
+    sum(o.standard_qty + o.poster_qty + o.gloss_qty) as total_purchase_in_lifetime
+from accounts as a
+join orders as o
+on a.id=o.account_id
+group by a.id,a.name
+order by total_purchase_in_lifetime desc;
+
+
+select t2.account_id as account_id,
+	t2.account_name as account_name,
+    t2.total_purchase_in_lifetime as total_purchase_in_lifetime
+from (
+  	--tested :
+	select a.id as account_id,
+	a.name as account_name,
+    sum(o.standard_qty) as total_standard_qty_in_lifetime
+	from accounts as a
+	join orders as o
+	on a.id=o.account_id
+	group by a.id,a.name
+	order by total_standard_qty_in_lifetime desc
+) as t1
+join (
+  	 --tested:
+ 	 select a.id as account_id,
+		a.name as account_name,
+	    sum(o.standard_qty + o.poster_qty + o.gloss_qty) as total_purchase_in_lifetime
+	from accounts as a
+	join orders as o
+	on a.id=o.account_id
+	group by a.id,a.name
+	order by total_purchase_in_lifetime desc
+) as t2
+on t1.account_id=t2.account_id
+where t2.total_purchase_in_lifetime > 
+(
+    select max(t3.total_standard_qty_in_lifetime)
+  	from (
+      		--tested
+        	select a.id as account_id,
+			a.name as account_name,
+    		sum(o.standard_qty) as total_standard_qty_in_lifetime
+			from accounts as a
+			join orders as o
+			on a.id=o.account_id
+			group by a.id,a.name
+			order by total_standard_qty_in_lifetime desc
+      )as t3
+  );
+      
+  
+  
+--q4:
+select a.id as account_id,
+	a.name as account_name,
+    sum(o.total_amt_usd) as total_amt_usd_in_lifetime
+from accounts as a
+join orders as o
+on a.id=o.account_id
+group by a.id,a.name;
+
+select a.id as account_id,
+      a.name as account_name,
+      w.channel as channel_name,
+      count(*) as no_of_times_used
+from accounts as a
+join web_events as w
+on a.id=w.account_id
+group by a.id,a.name,w.channel;
+
+
+--using limit it would be easear
+select *
+from (
+  	select a.id as account_id,
+	a.name as account_name,
+    sum(o.total_amt_usd) as total_amt_usd_in_lifetime
+	from accounts as a
+	join orders as o
+	on a.id=o.account_id
+	group by a.id,a.name 
+) as t1
+join (
+     select a.id as account_id,
+      a.name as account_name,
+      w.channel as channel_name,
+      count(*) as no_of_times_used
+	from accounts as a
+	join web_events as w
+	on a.id=w.account_id
+	group by a.id,a.name,w.channel
+)as t2
+on t1.account_id=t2.account_id
+where t1.total_amt_usd_in_lifetime =
+	(
+        select max(t3.total_amt_usd_in_lifetime)
+      	from (
+         	select a.id as account_id,
+			a.name as account_name,
+   			 sum(o.total_amt_usd) as total_amt_usd_in_lifetime
+			from accounts as a
+			join orders as o
+			on a.id=o.account_id
+			group by a.id,a.name 
+        )as t3
+    )        	
+order by t2.no_of_times_used desc;
+ 
+ 
+ --q5:
+ select avg(t.total_spent) as average_total_spent_of_top_10_people
+ from (
+     select a.id as account_id,
+   		a.name as account_name,
+   		sum(o.total_amt_usd) as total_spent
+   	from accounts as a
+    join orders as o
+    on a.id=o.account_id
+   	group by a.id,a.name
+    order by total_spent desc
+    limit 10
+ ) as t;
+ 
+
+--q6:
+select o.account_id as account_id,
+	avg(o.total_amt_usd) as  avg
+ from orders as o
+ group by o.account_id
+ having avg(o.total_amt_usd) > (
+   	select avg(o.total_amt_usd) as average_all
+   	from orders as o
+   )
+  
+
+				     
+				     
+/*************************
+*******     WITH     *****
+*************************/
+
+--events per day
+select w.channel as channel_name,
+	  date_trunc('day',w.occurred_at) as day,
+      count(*) as events
+from web_events as w
+group by w.channel,date_trunc('day',w.occurred_at)
+order by channel_name ,day desc;
+
+--avg events per day
+select t1.channel_name as channel_name,
+	avg(t1.events) as avg_events_perday
+from (
+    select w.channel as channel_name,
+	  date_trunc('day',w.occurred_at) as day,
+      count(*) as events
+	from web_events as w
+	group by w.channel,date_trunc('day',w.occurred_at)
+	order by channel_name ,day desc
+)as t1
+group by t1.channel_name
+order by avg_events_perday;
+
+
+--avg events per day on each channel using WITH
+with tab1 as(
+    select w.channel as channel_name,
+	  date_trunc('day',w.occurred_at) as day,
+      count(*) as events
+	from web_events as w
+	group by w.channel,date_trunc('day',w.occurred_at)
+	order by channel_name ,day desc
+)
+select tab1.channel_name as channel_name,
+	avg(tab1.events) as avg_events_perday
+from tab1 
+group by tab1.channel_name
+order by avg_events_perday;
+
+
+--practice for multiple table using WITH
+with 
+     tab1 as(
+     select * 
+     from web_events
+     ),   --Note: use commo to seperate diff tables
+	tab2 as(
+	  select *
+	  from accounts
+	)
+select *
+from tab1
+join tab2
+on tab1.account_id=tab2.id
+order by tab1.account_id;
+ 
+/***************************
+***  END OF WITH Basics ****
+***************************/
+  
+
+
+
+
+
+
 
 
