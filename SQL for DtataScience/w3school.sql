@@ -1925,7 +1925,185 @@ order by tab1.account_id;
 ***  END OF WITH Basics ****
 ***************************/
   
+with t1 as(select s.id as sales_rep_id,
+	s.name as sales_rep_name,
+    s.region_id as region_id,
+    sum(o.total_amt_usd) as total
+from  sales_reps as s
+join accounts as a
+on a.sales_rep_id = s.id
+join orders as o
+on o.account_id=a.id
+group by s.id,s.name,s.region_id),
+t2 as (
+select t1.region_id as region_id,
+    max(t1.total) as max_total
+from t1 
+group by t1.region_id )
+select t1.region_id as region_id,
+	r.name as region_name,
+    t1.sales_rep_id as sales_rep_id,
+    t1.sales_rep_name as sales_rep_name,
+    t1.total as total_amt
+ from t1
+ join region as r
+ on t1.region_id=r.id
+ join t2 
+ on t2.region_id=t1.region_id
+ where t1.total=t2.max_total
+ order by total_amt desc;
+ 
+ 
+ 
+ with 
+ t1 as(
+ select r.id as region_id,
+ 	r.name as region_name,
+    sum(total_amt_usd) as total
+ from region as r
+ join sales_reps as s
+ on r.id=s.region_id
+ join accounts as a
+ on a.sales_rep_id=s.id
+ join orders as o
+ on o.account_id=a.id
+ group by r.id,r.name
+ order by total desc),
+ t2 as 
+ (
+   select t1.region_id as region_id
+   from t1
+   limit 1 ) ---will gieve incorrect result when multiple region have same rank
 
+select r.id as region_id,
+	r.name as region_name,
+    count(*) toatl_order_placed
+from region as r
+join sales_reps as s
+on r.id=s.region_id
+join accounts as a
+on a.sales_rep_id=s.id
+join orders as o
+on o.account_id=a.id
+--where r.id in t2  : Why ??
+join t2 
+on t2.region_id=r.id
+group by r.id,r.name;
+ 
+ 
+ 
+ 
+ with 
+ t1 as(
+ select r.id as region_id,
+ 	r.name as region_name,
+    sum(total_amt_usd) as total
+ from region as r
+ join sales_reps as s
+ on r.id=s.region_id
+ join accounts as a
+ on a.sales_rep_id=s.id
+ join orders as o
+ on o.account_id=a.id
+ group by r.id,r.name
+ order by total desc),
+ t2 as 
+ (
+   select max(t1.total) as max_total
+   from t1 ),
+  t3 as
+  (
+    select t1.region_id as region_id
+    from t1
+    where t1.total in --t1.total in t2.max_total ? Why
+    		(
+              select max_total
+              from t2
+             )
+  )
+select r.id as region_id,
+	r.name as region_name,
+    count(*) toatl_order_placed
+from region as r
+join sales_reps as s
+on r.id=s.region_id
+join accounts as a
+on a.sales_rep_id=s.id
+join orders as o
+on o.account_id=a.id
+--where r.id in t2  : Why ??
+join t3
+on t3.region_id=r.id
+group by r.id,r.name;
+ 
+
+with 
+t1 as
+(
+   select distinct a.id as account_id
+   from accounts as a
+ )
+ select * 
+ from orders as o
+ where o.account_id in --you have to select all the desired data after IN
+ (
+   select account_id
+   from t1
+ );
+ 
+ 
+ with 
+ t1 as(
+ select r.id as region_id,
+ 	r.name as region_name,
+    sum(total_amt_usd) as total
+ from region as r
+ join sales_reps as s
+ on r.id=s.region_id
+ join accounts as a
+ on a.sales_rep_id=s.id
+ join orders as o
+ on o.account_id=a.id
+ group by r.id,r.name
+ order by total desc),
+ t2 as 
+ (
+   select max(t1.total) as max_total
+   from t1 ),
+  t3 as
+  (
+    select t1.region_id as region_id
+    from t1
+    where t1.total in --t1.total in t2.max_total ? Why
+    		(
+              select max_total
+              from t2
+             )
+  )
+select r.id as region_id,
+	r.name as region_name,
+    count(*) toatl_order_placed
+from region as r
+join sales_reps as s
+on r.id=s.region_id
+join accounts as a
+on a.sales_rep_id=s.id
+join orders as o
+on o.account_id=a.id
+--where r.id in t2  : Why ??
+/*
+join t3
+on t3.region_id=r.id
+*/
+where r.id in (
+  	select t3.region_id 
+    from t3
+  )
+  --put join or IN, both will work
+group by r.id,r.name;
+
+
+--from q3:Quiz- With,Lession-4
 
 
 
