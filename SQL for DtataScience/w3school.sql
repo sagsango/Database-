@@ -2066,12 +2066,10 @@ t1 as
  on o.account_id=a.id
  group by r.id,r.name
  order by total desc),
- t2 as 
- (
+ t2 as (
    select max(t1.total) as max_total
    from t1 ),
-  t3 as
-  (
+ t3 as (
     select t1.region_id as region_id
     from t1
     where t1.total in --t1.total in t2.max_total ? Why
@@ -2079,7 +2077,7 @@ t1 as
               select max_total
               from t2
              )
-  )
+ )
 select r.id as region_id,
 	r.name as region_name,
     count(*) toatl_order_placed
