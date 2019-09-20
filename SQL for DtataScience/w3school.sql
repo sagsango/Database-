@@ -2087,7 +2087,7 @@ on r.id=s.region_id
 join accounts as a
 on a.sales_rep_id=s.id
 join orders as o
-on o.account_id=a.id
+on o.account_id=a.id--"Revision"
 --where r.id in t2  : Why ??
 /*
 join t3
@@ -2102,6 +2102,88 @@ group by r.id,r.name;
 
 
 --from q3:Quiz- With,Lession-4
+--"Revision"
+with t1 as(
+  select a.id as account_id,
+	a.name as account_name,
+    sum(o.total) as total_sum,
+    sum(o.standard_qty) as standard_qty_sum
+ from accounts as a
+ join orders as o
+ on a.id=o.account_id
+ group by a.id,a.name
+ order by standard_qty_sum desc,total_sum desc
+ limit 1 ),
+ --No corner :Nice use of limit
+ t2 as(
+   select a.id as account_id,
+ 	a.name as account_name
+ from accounts as a
+ join orders as o
+ on a.id=o.account_id
+ group by a.id , a.name 
+ having sum(o.total) > (select t1.total_sum from t1))
+ select count(*)
+ from t2;
+ 
+ 
+ 
+ with t1 as(
+ select a.id as account_id,
+ 	sum(o.total_amt_usd) as total_amt
+ from accounts as a
+ join orders as o
+ on a.id=o.account_id
+ group by a.id
+ order by total_amt desc
+ limit 1)
+ select a.id as account_id,
+ 	a.name as account_name,
+    w.channel as channel,
+    count(*) no_of_events
+ from accounts as a
+ join web_events as w
+ --on a.id=w.account_id
+ --where a.id in (select account_id from t1)
+ on a.id = w.account_id and a.id in (select account_id from t1)
+ group by a.id,a.name,w.channel
+ order by no_of_events desc;
+  
+  
+ with t1 as(
+ select a.id as account_id,
+ 	a.name as account_name,
+    sum(o.total_amt_usd) as tot_spent
+ from orders as o
+ join accounts as a
+ on a.id=o.account_id
+ group by a.id,a.name
+ order by tot_spent desc
+ limit 10)
+ select avg(t1.tot_spent) as avg_total_spent_of_top_10
+ from t1;
+ 
+ 
+ with t1 as(
+ select avg(o.total_amt_usd) tot_avg
+ from accounts as a
+ join orders as o
+ on a.id=o.account_id),
+ t2 as(
+ select a.id as account_id,
+        avg(o.total_amt_usd) as avg_amt
+ from accounts as a
+ join orders as o
+ on a.id=o.account_id
+ group by a.id
+ having avg(o.total_amt_usd) > (select tot_avg from t1))
+ select avg(t2.avg_amt) avg
+ from t2;
+ 
+ 
+ 
+ 
+ 				     
 
 
 
