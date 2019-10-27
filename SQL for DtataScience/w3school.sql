@@ -2181,7 +2181,43 @@ with t1 as(
  from t2;
  
  
- 
+--Lesson 5
+--https://www.youtube.com/watch?v=blHEnrYwySE	
+--there are the aggrigration function used
+-- aggfunc()over(partition by __ order by__)
+/*
+Row_Number
+Rank
+Dense Rank
+*/
+
+/*
+percnt_rank()
+cume_dist()
+ntile(num_buckets integer)
+*/
+
+/*
+Lag()
+Lead()
+*/
+
+/*
+min()
+first_value()
+
+max()
+last_value()
+
+avg()
+*/
+
+
+/*
+percentile 
+ntile(n)
+*/
+
  
  				     
 
