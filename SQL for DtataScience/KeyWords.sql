@@ -12,7 +12,7 @@ from ___ as t1
 join ___ as t2
 on t1.___ = t2.___
 where   t1.___ [ in , = , >= , <= , != , like ] [ and , or ][ between l and r ]
-group by t1.__ ,t1.__
+group by c1,c2,...cn
 having  [ aggrigration : sum ,avg , count ,max ,min ..]
 order by __ desc
 limit MAX_ROW
