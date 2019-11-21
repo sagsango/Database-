@@ -13,7 +13,7 @@ join ___ as t2
 on t1.___ = t2.___
 where   t1.___ [ in , = , >= , <= , != , like ] [ and , or ][ between l and r ]
 group by e.t1,e.t2,...e.tn
-having  [ aggrigration : sum ,avg , count ,max ,min ..]
+having  [condition on aggrigration : sum ,avg , count ,max ,min ..]
 order by cj,ck,cz desc
 limit MAX_ROW
 
