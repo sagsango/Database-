@@ -1,3 +1,6 @@
+// See https://www.javatpoint.com/mysql-tutorial
+// For Create, Update, and some other importent jargans
+
 with dpt1 as ( ),
      dpt2 as ( ),
      dpt3 as ( )
