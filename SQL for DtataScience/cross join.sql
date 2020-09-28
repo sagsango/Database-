@@ -1,4 +1,4 @@
-Q : Find all costumer having order >= average on of orders per costumer
+Q : Find all costumer having order >= average no of orders per costumer
 with 
 t1 as (
   	select count(*) as total_order
