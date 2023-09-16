@@ -4,8 +4,8 @@
 
 /* NOTE: There is only one with keyword */
 with dpt1 as ( ),
-     dpt2 as ( ),
-     dpt3 as ( )
+     dpt2 as ( /* You can use here dept1 */),
+     dpt3 as ( /* You can use here dept1 & dept2 */)
 
 [select ,select distinct ] ___ as c1, ___ as c2, ___ as c3,
         case 
