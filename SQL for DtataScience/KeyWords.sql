@@ -15,7 +15,7 @@ with dpt1 as ( ),
         end as c3
 from ___ as t1
 join ___ as t2
-on t1.___ = t2.___
+on t1.___ = t2.___    /* XXX: Here you can put like keyword also */
 where   t1.___ [ in , = , >= , <= , != , like ] [ and , or ][ between l and r ]
 group by e.t1,e.t2,...e.tn
 having  [condition on aggrigration : sum ,avg , count ,max ,min ..]
